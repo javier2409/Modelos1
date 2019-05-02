@@ -13,12 +13,15 @@ s.t. limite_espacio: vip + grl*0.5 <= 8000;
 s.t. seguridad_vip: 20*s_vip >= vip;
 s.t. seguridad_grl: 8*s_grl >= grl;
 
+s.t. limite_seguridad: s_vip + s_grl <= 800;
+
 solve;
 
 printf: "Cantidad de VIP que se venden: %d\n",vip;
 printf: "Cantidad de General que se venden: %d\n",grl;
 printf: "Cantidad de guardias en VIP: %d\n",s_vip;
 printf: "Cantidad de guardias en General: %d\n",s_grl;
+printf: "Ganancia: %d \n",Z;
 
 end;
 
