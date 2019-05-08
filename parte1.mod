@@ -94,7 +94,7 @@ s.t. capitan_es_titular{i in Jugadores, j in Partidos}: L[i,j] <= Y[i];
 
 s.t. un_capitan_por_partido{j in Partidos}: sum{i in Jugadores} L[i,j] = 1;
 
-s.t. limite_dinero: sum{i in Jugadores} Y[i]*Precio[i] <= 58000000;
+s.t. limite_dinero: sum{i in Jugadores} Y[i]*Precio[i] <= 58800000;
 
 solve;
 
