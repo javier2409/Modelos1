@@ -1,3 +1,11 @@
-# Modelos1
+# Trabajo Práctico de Modelos y Optimización 1 - FIUBA
 
-### [Informe](https://www.overleaf.com/project/5cc4ac9f979000312bf75e3b)
+Integrantes:
+* Ferreyra, Javier
+* Gerstner, Facundo
+
+Cuatrimestre: 1ºC 2019
+
+### [Enunciado](https://github.com/javier2409/Modelos1/blob/master/Trabajo_Practico_1er_Cuatrimestrestre_2019.pdf)
+
+### [Informe](https://github.com/javier2409/Modelos1/blob/master/Informe.pdf)
