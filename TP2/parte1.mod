@@ -78,9 +78,11 @@ table data IN "CSV" "NoNulos.csv" : Jugadores <- [Jugador], 	posicion~Puesto,
 																penales_atajados~PA;
 
 
-var Y{i in Jugadores} >= 0 binary; #el jugador i forma parte del equipo
+var Y{i in Jugadores,j in Partidos} >= 0 binary; #el jugador i forma parte del equipo en la fecha j
 var L{i in Jugadores,j in Partidos} >= 0 binary; #el jugador i es capitan en el partido j
 var T{i in Jugadores,j in Partidos} >= 0 binary; #el jugador i es titular en el partido j
+var C{i in Jugadores, j in Partidos} >= 0; #jugador i comprado en la fecha j
+var V{i in Jugadores, j in Partidos} >= 0; #jugador i vendido en la fecha j
 
 maximize Z: sum{i in Jugadores} 
 													 	 ((T[i,1]*p1[i])
@@ -115,18 +117,24 @@ maximize Z: sum{i in Jugadores}
 														+ (L[i,14]*p14[i])
 														+ (L[i,15]*p15[i]));
 
-s.t. cantidad_total_jugadores: sum{i in Jugadores} Y[i] = 15;
+s.t. cantidad_total_jugadores{j in Partidos}: sum{i in Jugadores} Y[i,j] = 15;
 
-s.t. limite_por_club{j in Clubes}: sum{i in Jugadores: club[i]=j}Y[i] <= 3;
+s.t. cantidad_jugadores_comprados{j in Partidos}: sum{i in Jugadores} C[i,j] <= 4;
+s.t. cantidad_jugadores_vendidos{j in Partidos}: sum{i in Jugadores} V[i,j] <= 4;
 
-s.t. limite_arqueros: sum{i in Jugadores:posicion[i] = 'ARQ'} Y[i] = 2;
-s.t. limite_defensores: sum{i in Jugadores:posicion[i] = 'DEF'} Y[i] = 4;
-s.t. limite_volantes: sum{i in Jugadores:posicion[i] = 'VOL'} Y[i] = 5;
-s.t. limite_delanteros: sum{i in Jugadores:posicion[i] = 'DEL'} Y[i] = 4;
+s.t. comprados_son_parte_del_equipo{i in Jugadores, j in Partidos}: C[i,j] <= Y[i,j];
+s.t. vendidos_no_son_parte_del_equipo{i in Jugadores, j in Partidos}: V[i,j] + Y[i,j] <= 1;
 
-s.t. capitan_es_del_equipo{i in Jugadores, j in Partidos}: L[i,j] <= Y[i];
+s.t. limite_por_club{j in Clubes, p in Partidos}: sum{i in Jugadores: club[i]=j}Y[i,p] <= 3;
 
-s.t. titular_es_parte_de_equipo{i in Jugadores, j in Partidos}: T[i,j] <= Y[i];
+s.t. limite_arqueros{p in Partidos}: sum{i in Jugadores:posicion[i] = 'ARQ'} Y[i,p] = 2;
+s.t. limite_defensores{p in Partidos}: sum{i in Jugadores:posicion[i] = 'DEF'} Y[i,p] = 4;
+s.t. limite_volantes{p in Partidos}: sum{i in Jugadores:posicion[i] = 'VOL'} Y[i,p] = 5;
+s.t. limite_delanteros{p in Partidos}: sum{i in Jugadores:posicion[i] = 'DEL'} Y[i,p] = 4;
+
+s.t. capitan_es_del_equipo{i in Jugadores, j in Partidos}: L[i,j] <= Y[i,j];
+
+s.t. titular_es_parte_de_equipo{i in Jugadores, j in Partidos}: T[i,j] <= Y[i,j];
 
 s.t. once_titulares{j in Partidos}: sum{i in Jugadores} T[i,j] = 11;
 s.t. un_arquero{j in Partidos}: sum{i in Jugadores: posicion[i]='ARQ'} T[i,j] = 1;
@@ -137,7 +145,7 @@ s.t. tres_delanteros{j in Partidos}: sum{i in Jugadores: posicion[i]='DEL'} T[i,
 s.t. un_capitan_por_partido{j in Partidos}: sum{i in Jugadores} L[i,j] = 1;
 s.t. capitan_es_titular{i in Jugadores, j in Partidos}: L[i,j] <= T[i,j];
 
-s.t. limite_dinero: sum{i in Jugadores} Y[i]*Precio[i] <= 58800000;
+s.t. limite_dinero: (sum{i in Jugadores} Y[i,1]*Precio[i]) + (sum{i in Jugadores, j in Partidos} (C[i,j]*Precio[i] - V[i,j]*Precio[i])) <= 58800000;
 
 solve;
 
@@ -150,7 +158,7 @@ for {j in Partidos}{
 	}
 	printf:'\n';
 	printf: '***Suplentes: \n';
-	for {i in Jugadores: T[i,j]=0 and Y[i]=1}{
+	for {i in Jugadores: T[i,j]=0 and Y[i,j]=1}{
 		printf: "%s, %s \n",i,posicion[i];
 	}
 	printf:'\n';
