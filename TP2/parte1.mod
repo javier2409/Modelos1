@@ -45,6 +45,7 @@ param penales_atajados{i in Jugadores};
 
 param Precio{i in Jugadores};
 param PuntosTotales{i in Jugadores};
+param CANT_SUPLENTES := 4;
 
 table data IN "CSV" "NoNulos.csv" : Jugadores <- [Jugador], 	posicion~Puesto, 
 																Precio~Cotizacion,
@@ -81,10 +82,10 @@ table data IN "CSV" "NoNulos.csv" : Jugadores <- [Jugador], 	posicion~Puesto,
 var Y{i in Jugadores, j in Partidos} >= 0 binary; #el jugador i forma parte del equipo en la fecha j
 var L{i in Jugadores,j in Partidos} >= 0 binary; #el jugador i es capitan en el partido j
 var T{i in Jugadores,j in Partidos} >= 0 binary; #el jugador i es titular en el partido j
-var C{i in Jugadores, j in Partidos} >= 0; #jugador i comprado en la fecha j
-var V{i in Jugadores, j in Partidos} >= 0; #jugador i vendido en la fecha j
-var ev{i in Jugadores, j in Partidos: j>1} >= 0; # estaba en la fecha anterior y no fue vendido
-var nc{i in Jugadores, j in Partidos: j>1} >= 0; # no estaba en la fecha anterior y fue comprado
+var C{i in Jugadores, j in Partidos} >= 0 binary; #jugador i comprado en la fecha j
+var V{i in Jugadores, j in Partidos} >= 0 binary; #jugador i vendido en la fecha j
+var cant_sup{i in Posiciones} >= 0 integer; #cantidad de suplentes en la posicion i
+var defecto{i in Posiciones, j in Posiciones: j!=i} >= 0 binary;
 
 maximize Z: sum{i in Jugadores} 
 													 	 ((T[i,1]*p1[i])
@@ -119,26 +120,20 @@ maximize Z: sum{i in Jugadores}
 														+ (L[i,14]*p14[i])
 														+ (L[i,15]*p15[i]));
 
-s.t. cantidad_total_jugadores{j in Partidos}: sum{i in Jugadores} Y[i,j] = 15;
+s.t. cantidad_total_jugadores{j in Partidos}: sum{i in Jugadores} Y[i,j] = 11 + CANT_SUPLENTES;
 
 s.t. cantidad_jugadores_comprados{j in Partidos: j > 1}: sum{i in Jugadores} C[i,j] <= 4;
 s.t. cantidad_jugadores_vendidos{j in Partidos: j > 1}: sum{i in Jugadores} V[i,j] <= 4;
 
-s.t. estaba_en_la_fecha_anterior_y_no_fue_vendido{i in Jugadores, j in Partidos: j>1}: 2*ev[i,j] <= Y[i, j-1] + (1 - V[i,j]);
-s.t. estaba_en_la_fecha_anterior_y_no_fue_vendido_2{i in Jugadores, j in Partidos: j>1}: ev[i,j] + 1 >= Y[i, j-1] + (1 - V[i,j]);
-
-s.t. no_estaba_en_la_fecha_anterior_y_fue_comprado{i in Jugadores, j in Partidos: j>1}: 2*nc[i,j] <= (1 - Y[i,j-1]) + C[i,j];
-s.t. no_estaba_en_la_fecha_anterior_y_fue_comprado2{i in Jugadores, j in Partidos: j>1}: nc[i,j] + 1 >= (1 - Y[i,j-1]) + C[i,j];
-
-s.t. comprado_forma_parte_del_equipo{i in Jugadores, j in Partidos: j>1}: Y[i,j] <= ev[i,j] + nc[i,j];
-s.t. comprado_forma_parte_del_equipo_2{i in Jugadores, j in Partidos: j>1}: 2*Y[i,j] >= ev[i,j] + nc[i,j];
+s.t. si_esta_en_equipo_lo_compre{i in Jugadores, j in Partidos}: Y[i,j] = sum{k in Partidos: k<=j}C[i,k] - sum{k in Partidos: k<=j}V[i,k];
+s.t. no_comprar_y_vender_al_mismo_jugador{i in Jugadores, j in Partidos}: V[i,j] + C[i,j] <= 1;
 
 s.t. limite_por_club{j in Clubes, p in Partidos}: sum{i in Jugadores: club[i]=j}Y[i,p] <= 3;
 
-s.t. limite_arqueros{j in Partidos}: sum{i in Jugadores:posicion[i] = 'ARQ'} Y[i,j] = 2;
-s.t. limite_defensores{j in Partidos}: sum{i in Jugadores:posicion[i] = 'DEF'} Y[i,j] = 4;
-s.t. limite_volantes{j in Partidos}: sum{i in Jugadores:posicion[i] = 'VOL'} Y[i,j] = 5;
-s.t. limite_delanteros{j in Partidos}: sum{i in Jugadores:posicion[i] = 'DEL'} Y[i,j] = 4;
+s.t. limite_arqueros{j in Partidos}: sum{i in Jugadores:posicion[i] = 'ARQ'} Y[i,j] = 1+cant_sup['ARQ'];
+s.t. limite_defensores{j in Partidos}: sum{i in Jugadores:posicion[i] = 'DEF'} Y[i,j] = 3+cant_sup['DEF'];
+s.t. limite_volantes{j in Partidos}: sum{i in Jugadores:posicion[i] = 'VOL'} Y[i,j] = 4+cant_sup['VOL'];
+s.t. limite_delanteros{j in Partidos}: sum{i in Jugadores:posicion[i] = 'DEL'} Y[i,j] = 3+cant_sup['DEL'];
 
 s.t. capitan_es_del_equipo{i in Jugadores, j in Partidos}: L[i,j] <= Y[i,j];
 
@@ -153,7 +148,11 @@ s.t. tres_delanteros{j in Partidos}: sum{i in Jugadores: posicion[i]='DEL'} T[i,
 s.t. un_capitan_por_partido{j in Partidos}: sum{i in Jugadores} L[i,j] = 1;
 s.t. capitan_es_titular{i in Jugadores, j in Partidos}: L[i,j] <= T[i,j];
 
-s.t. limite_dinero: sum{i in Jugadores, j in Partidos: j=1} (Y[i,j]*Precio[i]) + sum{i in Jugadores, j in Partidos: j > 1} (C[i,j]*Precio[i] - V[i,j]*Precio[i]) <= 65000000;
+s.t. cantidad_suplentes: sum{i in Posiciones}cant_sup[i] = CANT_SUPLENTES;
+s.t. equitatividad_suplentes{i in Posiciones, j in Posiciones: j!=i}: cant_sup[i]+defecto[i,j] = cant_sup[j]+defecto[j,i];
+s.t. defecto_exclusivo{i in Posiciones, j in Posiciones: j!= i}: defecto[i,j]+defecto[j,i] <= 1; 
+
+s.t. limite_dinero{j in Partidos}: sum{i in Jugadores}Y[i,j]*Precio[i] <= 65000000;
 
 solve;
 
@@ -167,6 +166,16 @@ for {j in Partidos}{
 	printf:'\n';
 	printf: '***Suplentes: \n';
 	for {i in Jugadores: T[i,j]=0 and Y[i,j]=1}{
+		printf: "%s, %s \n",i,posicion[i];
+	}
+	printf:'\n';
+	printf: '***Comprados: \n';
+	for {i in Jugadores: C[i,j]=1}{
+		printf: "%s, %s \n",i,posicion[i];
+	}
+	printf:'\n';
+	printf: '***Vendidos: \n';
+	for {i in Jugadores: V[i,j]=1}{
 		printf: "%s, %s \n",i,posicion[i];
 	}
 	printf:'\n';
