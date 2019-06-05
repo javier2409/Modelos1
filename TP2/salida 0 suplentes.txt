@@ -1,0 +1,474 @@
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   463.0 secs
+Memory used: 229.8 Mb (241011635 bytes)
+
+------------Partido 1-------------
+***Titulares:
+Escudero, Sergio, DEF 
+Díaz, Daniel, DEF 
+Bertochi, Nicolás, VOL 
+Damonte, Israel, VOL 
+Albertengo, Lucas, DEL 
+Rodríguez, Maxi, VOL 
+Gutiérrez, Teófilo, DEL 
+Donatti, Alejandro, DEF 
+Cervi, Franco, DEL 
+López, Ramiro, VOL 
+Crivelli, Federico, ARQ 
+
+***Suplentes: 
+
+***Comprados: 
+Escudero, Sergio, DEF 
+Díaz, Daniel, DEF 
+Bertochi, Nicolás, VOL 
+Damonte, Israel, VOL 
+Albertengo, Lucas, DEL 
+Rodríguez, Maxi, VOL 
+Gutiérrez, Teófilo, DEL 
+Donatti, Alejandro, DEF 
+Cervi, Franco, DEL 
+López, Ramiro, VOL 
+Crivelli, Federico, ARQ 
+
+***Vendidos: 
+
+***Capitan 
+Albertengo, Lucas, DEL 
+
+------------Partido 2-------------
+***Titulares:
+Bertolo, Nicolás, VOL 
+Escudero, Sergio, DEF 
+Sara, Guillermo, ARQ 
+Díaz, Daniel, DEF 
+Ramírez, David, VOL 
+Bertochi, Nicolás, VOL 
+Rodríguez, Maxi, VOL 
+Gutiérrez, Teófilo, DEL 
+Donatti, Alejandro, DEF 
+Cervi, Franco, DEL 
+Niell, Franco, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Bertolo, Nicolás, VOL 
+Sara, Guillermo, ARQ 
+Ramírez, David, VOL 
+Niell, Franco, DEL 
+
+***Vendidos: 
+Damonte, Israel, VOL 
+Albertengo, Lucas, DEL 
+López, Ramiro, VOL 
+Crivelli, Federico, ARQ 
+
+***Capitan 
+Bertolo, Nicolás, VOL 
+
+------------Partido 3-------------
+***Titulares:
+Martínez, Roger, DEL 
+Bertolo, Nicolás, VOL 
+Escudero, Sergio, DEF 
+Sara, Guillermo, ARQ 
+Díaz, Daniel, DEF 
+Mancuello, Federico, VOL 
+Rodríguez, Maxi, VOL 
+Mora, Rodrigo, DEL 
+Donatti, Alejandro, DEF 
+Niell, Franco, DEL 
+Núñez, Gervasio, VOL 
+
+***Suplentes: 
+
+***Comprados: 
+Martínez, Roger, DEL 
+Mancuello, Federico, VOL 
+Mora, Rodrigo, DEL 
+Núñez, Gervasio, VOL 
+
+***Vendidos: 
+Ramírez, David, VOL 
+Bertochi, Nicolás, VOL 
+Gutiérrez, Teófilo, DEL 
+Cervi, Franco, DEL 
+
+***Capitan 
+Mora, Rodrigo, DEL 
+
+------------Partido 4-------------
+***Titulares:
+Martínez, Roger, DEL 
+Escudero, Sergio, DEF 
+Díaz, Daniel, DEF 
+Arias, Gabriel, ARQ 
+Rodríguez, Maxi, VOL 
+Mora, Rodrigo, DEL 
+Donatti, Alejandro, DEF 
+Ruben, Marco, DEL 
+Blanco, Sebastián, VOL 
+Núñez, Gervasio, VOL 
+Malcorra, Ignacio, VOL 
+
+***Suplentes: 
+
+***Comprados: 
+Arias, Gabriel, ARQ 
+Ruben, Marco, DEL 
+Blanco, Sebastián, VOL 
+Malcorra, Ignacio, VOL 
+
+***Vendidos: 
+Bertolo, Nicolás, VOL 
+Sara, Guillermo, ARQ 
+Mancuello, Federico, VOL 
+Niell, Franco, DEL 
+
+***Capitan 
+Ruben, Marco, DEL 
+
+------------Partido 5-------------
+***Titulares:
+Carrera, Ramiro, VOL 
+Cazares, Juan, VOL 
+Escudero, Sergio, DEF 
+Díaz, Daniel, DEF 
+Arias, Gabriel, ARQ 
+Melano, Lucas, DEL 
+Mora, Rodrigo, DEL 
+Donatti, Alejandro, DEF 
+Matos, Mauro, DEL 
+Núñez, Gervasio, VOL 
+Malcorra, Ignacio, VOL 
+
+***Suplentes: 
+
+***Comprados: 
+Carrera, Ramiro, VOL 
+Cazares, Juan, VOL 
+Melano, Lucas, DEL 
+Matos, Mauro, DEL 
+
+***Vendidos: 
+Martínez, Roger, DEL 
+Rodríguez, Maxi, VOL 
+Ruben, Marco, DEL 
+Blanco, Sebastián, VOL 
+
+***Capitan 
+Melano, Lucas, DEL 
+
+------------Partido 6-------------
+***Titulares:
+Cazares, Juan, VOL 
+Escudero, Sergio, DEF 
+Márquez, Fernando, DEL 
+Arias, Gabriel, ARQ 
+Abila, Ramón, DEL 
+Ayala, Víctor, VOL 
+Donatti, Alejandro, DEF 
+Matos, Mauro, DEL 
+Núñez, Gervasio, VOL 
+Malcorra, Ignacio, VOL 
+Amor, Emiliano, DEF 
+
+***Suplentes: 
+
+***Comprados: 
+Márquez, Fernando, DEL 
+Abila, Ramón, DEL 
+Ayala, Víctor, VOL 
+Amor, Emiliano, DEF 
+
+***Vendidos: 
+Carrera, Ramiro, VOL 
+Díaz, Daniel, DEF 
+Melano, Lucas, DEL 
+Mora, Rodrigo, DEL 
+
+***Capitan 
+Abila, Ramón, DEL 
+
+------------Partido 7-------------
+***Titulares:
+Márquez, Fernando, DEL 
+Meli, César, VOL 
+Arias, Gabriel, ARQ 
+Fernández, Ignacio, VOL 
+Cavenaghi, Fernando, DEL 
+Donatti, Alejandro, DEF 
+Matos, Mauro, DEL 
+Delgado, Daniel, DEF 
+Núñez, Gervasio, VOL 
+Malcorra, Ignacio, VOL 
+Amor, Emiliano, DEF 
+
+***Suplentes: 
+
+***Comprados: 
+Meli, César, VOL 
+Fernández, Ignacio, VOL 
+Cavenaghi, Fernando, DEL 
+Delgado, Daniel, DEF 
+
+***Vendidos: 
+Cazares, Juan, VOL 
+Escudero, Sergio, DEF 
+Abila, Ramón, DEL 
+Ayala, Víctor, VOL 
+
+***Capitan 
+Núñez, Gervasio, VOL 
+
+------------Partido 8-------------
+***Titulares:
+Silva, Santiago, DEL 
+Rigoni, Emiliano, VOL 
+Meli, César, VOL 
+Arias, Gabriel, ARQ 
+Fernández, Ignacio, VOL 
+Ramírez, Rubén, DEL 
+Cavenaghi, Fernando, DEL 
+Donatti, Alejandro, DEF 
+Gómez, José Luis, DEF 
+Núñez, Gervasio, VOL 
+Amor, Emiliano, DEF 
+
+***Suplentes: 
+
+***Comprados: 
+Silva, Santiago, DEL 
+Rigoni, Emiliano, VOL 
+Ramírez, Rubén, DEL 
+Gómez, José Luis, DEF 
+
+***Vendidos: 
+Márquez, Fernando, DEL 
+Matos, Mauro, DEL 
+Delgado, Daniel, DEF 
+Malcorra, Ignacio, VOL 
+
+***Capitan 
+Gómez, José Luis, DEF 
+
+------------Partido 9-------------
+***Titulares:
+Silva, Santiago, DEL 
+Arias, Gabriel, ARQ 
+Fernández, Ignacio, VOL 
+Cavenaghi, Fernando, DEL 
+Donatti, Alejandro, DEF 
+Gómez, José Luis, DEF 
+Luna, Sebastián, VOL 
+Núñez, Gervasio, VOL 
+Sambueza, Fabián, VOL 
+González Pirez, Leandro, DEF 
+Pavone, Mariano, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Luna, Sebastián, VOL 
+Sambueza, Fabián, VOL 
+González Pirez, Leandro, DEF 
+Pavone, Mariano, DEL 
+
+***Vendidos: 
+Rigoni, Emiliano, VOL 
+Meli, César, VOL 
+Ramírez, Rubén, DEL 
+Amor, Emiliano, DEF 
+
+***Capitan 
+Pavone, Mariano, DEL 
+
+------------Partido 10-------------
+***Titulares:
+Cuero, Mauricio, DEL 
+Pavón, Cristian, VOL 
+Navarro, Nicolás, ARQ 
+Fernández, Ignacio, VOL 
+Cavenaghi, Fernando, DEL 
+Donatti, Alejandro, DEF 
+Gómez, José Luis, DEF 
+Luna, Sebastián, VOL 
+Sambueza, Fabián, VOL 
+González Pirez, Leandro, DEF 
+Triverio, Enrique, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Cuero, Mauricio, DEL 
+Pavón, Cristian, VOL 
+Navarro, Nicolás, ARQ 
+Triverio, Enrique, DEL 
+
+***Vendidos: 
+Silva, Santiago, DEL 
+Arias, Gabriel, ARQ 
+Núñez, Gervasio, VOL 
+Pavone, Mariano, DEL 
+
+***Capitan 
+Triverio, Enrique, DEL 
+
+------------Partido 11-------------
+***Titulares:
+Cuero, Mauricio, DEL 
+Zelarayán, Lucas, VOL 
+Burdisso, Guillermo, DEF 
+Pavón, Cristian, VOL 
+Navarro, Nicolás, ARQ 
+Fernández, Ignacio, VOL 
+Cabral, Yonathan, DEF 
+Gómez, José Luis, DEF 
+Sambueza, Fabián, VOL 
+Luna, Carlos, DEL 
+Triverio, Enrique, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Zelarayán, Lucas, VOL 
+Burdisso, Guillermo, DEF 
+Cabral, Yonathan, DEF 
+Luna, Carlos, DEL 
+
+***Vendidos: 
+Cavenaghi, Fernando, DEL 
+Donatti, Alejandro, DEF 
+Luna, Sebastián, VOL 
+González Pirez, Leandro, DEF 
+
+***Capitan 
+Zelarayán, Lucas, VOL 
+
+------------Partido 12-------------
+***Titulares:
+Sarulyte, Matías, DEF 
+Cuero, Mauricio, DEL 
+Zelarayán, Lucas, VOL 
+Burdisso, Guillermo, DEF 
+Llama, Cristian, VOL 
+Alario, Lucas, DEL 
+Navarro, Nicolás, ARQ 
+Fernández, Ignacio, VOL 
+Lollo, Luciano, DEF 
+Sambueza, Fabián, VOL 
+Triverio, Enrique, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Sarulyte, Matías, DEF 
+Llama, Cristian, VOL 
+Alario, Lucas, DEL 
+Lollo, Luciano, DEF 
+
+***Vendidos: 
+Pavón, Cristian, VOL 
+Cabral, Yonathan, DEF 
+Gómez, José Luis, DEF 
+Luna, Carlos, DEL 
+
+***Capitan 
+Alario, Lucas, DEL 
+
+------------Partido 13-------------
+***Titulares:
+Lequi, Matías, DEF 
+Sarulyte, Matías, DEF 
+Cuero, Mauricio, DEL 
+Llama, Cristian, VOL 
+Romero, Braian, VOL 
+Avalos, Gabriel, DEL 
+Navarro, Nicolás, ARQ 
+Fernández, Ignacio, VOL 
+Lollo, Luciano, DEF 
+Sambueza, Fabián, VOL 
+Pavone, Mariano, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Lequi, Matías, DEF 
+Romero, Braian, VOL 
+Avalos, Gabriel, DEL 
+Pavone, Mariano, DEL 
+
+***Vendidos: 
+Zelarayán, Lucas, VOL 
+Burdisso, Guillermo, DEF 
+Alario, Lucas, DEL 
+Triverio, Enrique, DEL 
+
+***Capitan 
+Pavone, Mariano, DEL 
+
+------------Partido 14-------------
+***Titulares:
+Sarulyte, Matías, DEF 
+Cuero, Mauricio, DEL 
+Llama, Cristian, VOL 
+Avalos, Gabriel, DEL 
+Navarro, Nicolás, ARQ 
+Fernández, Ignacio, VOL 
+Rojas, Jorge, VOL 
+Domínguez, Eduardo, DEF 
+Lollo, Luciano, DEF 
+Figueroa, Marcos, DEL 
+Malcorra, Ignacio, VOL 
+
+***Suplentes: 
+
+***Comprados: 
+Rojas, Jorge, VOL 
+Domínguez, Eduardo, DEF 
+Figueroa, Marcos, DEL 
+Malcorra, Ignacio, VOL 
+
+***Vendidos: 
+Lequi, Matías, DEF 
+Romero, Braian, VOL 
+Sambueza, Fabián, VOL 
+Pavone, Mariano, DEL 
+
+***Capitan 
+Domínguez, Eduardo, DEF 
+
+------------Partido 15-------------
+***Titulares:
+Sarulyte, Matías, DEF 
+Cuero, Mauricio, DEL 
+Díaz, Daniel, DEF 
+Llama, Cristian, VOL 
+Avalos, Gabriel, DEL 
+Navarro, Hilario, ARQ 
+Fernández, Ignacio, VOL 
+Rojas, Jorge, VOL 
+Uglessich, Mariano, DEF 
+Canelo, Alexis, VOL 
+Figueroa, Marcos, DEL 
+
+***Suplentes: 
+
+***Comprados: 
+Díaz, Daniel, DEF 
+Navarro, Hilario, ARQ 
+Uglessich, Mariano, DEF 
+Canelo, Alexis, VOL 
+
+***Vendidos: 
+Navarro, Nicolás, ARQ 
+Domínguez, Eduardo, DEF 
+Lollo, Luciano, DEF 
+Malcorra, Ignacio, VOL 
+
+***Capitan 
+Díaz, Daniel, DEF 
+----------Puntos----------
+Puntaje obtenido: 2697 
+Model has been successfully processed

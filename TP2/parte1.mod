@@ -45,7 +45,7 @@ param penales_atajados{i in Jugadores};
 
 param Precio{i in Jugadores};
 param PuntosTotales{i in Jugadores};
-param CANT_SUPLENTES := 4;
+param CANT_SUPLENTES := 6;
 
 table data IN "CSV" "NoNulos.csv" : Jugadores <- [Jugador], 	posicion~Puesto, 
 																Precio~Cotizacion,
