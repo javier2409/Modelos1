@@ -136,7 +136,7 @@ s.t. limite_volantes{j in Partidos}: sum{i in Jugadores:posicion[i] = 'VOL'} Y[i
 s.t. limite_delanteros{j in Partidos}: sum{i in Jugadores:posicion[i] = 'DEL'} Y[i,j] = 3+cant_sup['DEL'];
 
 s.t. capitan_es_del_equipo{i in Jugadores, j in Partidos}: L[i,j] <= Y[i,j];
-
+s.t. capitan_es_titular{i in Jugadores, j in Partidos}: L[i,j] <= T[i,j];
 s.t. titular_es_parte_de_equipo{i in Jugadores, j in Partidos}: T[i,j] <= Y[i,j];
 
 s.t. once_titulares{j in Partidos}: sum{i in Jugadores} T[i,j] = 11;
@@ -146,7 +146,6 @@ s.t. cuatro_volantes{j in Partidos}: sum{i in Jugadores: posicion[i]='VOL'} T[i,
 s.t. tres_delanteros{j in Partidos}: sum{i in Jugadores: posicion[i]='DEL'} T[i,j] = 3;
 
 s.t. un_capitan_por_partido{j in Partidos}: sum{i in Jugadores} L[i,j] = 1;
-s.t. capitan_es_titular{i in Jugadores, j in Partidos}: L[i,j] <= T[i,j];
 
 s.t. cantidad_suplentes: sum{i in Posiciones}cant_sup[i] = CANT_SUPLENTES;
 s.t. equitatividad_suplentes{i in Posiciones, j in Posiciones: j!=i}: cant_sup[i]+defecto[i,j] = cant_sup[j]+defecto[j,i];
