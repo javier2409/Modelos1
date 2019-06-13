@@ -1,6 +1,11 @@
 import csv
 
 
+'''
+La idea es ordenar los jugadores por puntaje en la primera fecha, luego ir llenando cada posicion con el 
+que obtuvo mas puntaje en esa fecha, siempre que de el presupuesto.
+'''
+
 LIMITS_BY_POSITION = {"ARQ": 1, "DEL": 2, "DEF": 4, "VOL": 4}
 
 
@@ -16,6 +21,7 @@ def parse_csv(csv_file):
 
 
 def fill_position(position, data, team, current_money):
+    print(current_money)
     spend = 0
     while len(team[position]) < LIMITS_BY_POSITION[position]:
         for player in data:
