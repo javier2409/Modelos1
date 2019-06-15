@@ -2,6 +2,7 @@ import csv
 
 #TODO: Definir que pasa cuando los puntos son iguales
 #TODO: Agregar la logica de los clubes
+#TODO: Agregar la logica del capitan
 #TODO: Hacer una funcion para imprimir los datos listos para latex
 
 '''
