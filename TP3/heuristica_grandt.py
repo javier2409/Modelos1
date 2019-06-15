@@ -13,6 +13,9 @@ LIMITS_BY_POSITION = {"ARQ": 2, "DEL": 3, "DEF": 5, "VOL": 5}
 FIRST_DATE_INDEX = 3
 LAST_DATE_INDEX = 19
 CHANGES_LIMIT = 4 # Solo puedo comprar/vender hasta 4 jugadores
+BUDGET = 65000000
+SECOND_DATE = 2
+LAST_DATE = 16
 
 def sort_by_date(data, date):
     '''
@@ -110,7 +113,7 @@ def calculate_team_for_match(csv_file, budget):
         current_money -= fill_position(position, data, team, current_money)
 
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
-    for date in range(2, 16):
+    for date in range(SECOND_DATE, LAST_DATE):
         money = check_team(team, current_money, data, date)
         print("Plata en fecha {date}: {money} \n".format(date=date, money=money))
 
@@ -119,4 +122,4 @@ def to_latex_table(data):
     pass
 
 
-calculate_team_for_match("./NoNulos.csv", 65000000)
+calculate_team_for_match("./NoNulos.csv", BUDGET)
