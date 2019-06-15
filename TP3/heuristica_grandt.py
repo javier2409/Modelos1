@@ -1,53 +1,121 @@
 import csv
 
+#TODO: Definir que pasa cuando los puntos son iguales
+#TODO: Agregar la logica de los clubes
+#TODO: Hacer una funcion para imprimir los datos listos para latex
 
 '''
-La idea es ordenar los jugadores por puntaje en la primera fecha, luego ir llenando cada posicion con el 
-que obtuvo mas puntaje en esa fecha, siempre que de el presupuesto.
+La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
 '''
 
-LIMITS_BY_POSITION = {"ARQ": 1, "DEL": 2, "DEF": 4, "VOL": 4}
+LIMITS_BY_POSITION = {"ARQ": 2, "DEL": 3, "DEF": 5, "VOL": 5}
+FIRST_DATE_INDEX = 3
+LAST_DATE_INDEX = 19
+CHANGES_LIMIT = 4 # Solo puedo comprar/vender hasta 4 jugadores
+
+def sort_by_date(data, date):
+    '''
+    Ordena la data por fecha date
+    (es + 3 porque la primera fecha es la columna 4)
+    '''
+    return sorted(data, key=lambda row: row["points"][date - 1], reverse=True)
 
 
 def parse_csv(csv_file):
+    '''
+    Parsea el csv y retorna los datos como una lista de dicts
+    '''
     with open(csv_file) as csv_file:
         reader = csv.reader(csv_file, delimiter=",")
         next(reader) # ignore header
-        sorted_data = sorted(reader, key=lambda row: int(row[4]), reverse=True)
         parsed_data = []
-        for player in sorted_data:
-            parsed_data.append({"name": player[0], "position": player[1], "club": player[2], "cost": player[3], "points": player[4]})
+        for player in reader:
+            parsed_data.append(
+                {
+                    "name": player[0],
+                    "position": player[1],
+                    "club": player[2],
+                    "cost": int(player[3]),
+                    "points": [int(points) for i, points in enumerate(player) if i > FIRST_DATE_INDEX and i < LAST_DATE_INDEX]
+                }
+            )
     return parsed_data
 
 
 def fill_position(position, data, team, current_money):
-    print(current_money)
+    '''
+    Llena la posicion con la cantidad de jugadores correspondientes, y devuelve lo que se gasto
+    '''
+    ordered_data = sort_by_date(data, 1)
     spend = 0
+    current_index = 0
     while len(team[position]) < LIMITS_BY_POSITION[position]:
-        for player in data:
-            if player["position"] == position and current_money - int(player["cost"]) >= 0 and player["name"] not in team[position]:
-                team[position].append(player["name"])
-                spend += int(player["cost"])
-                break
+        player = ordered_data[current_index]
+        if player["position"] == position and current_money - int(player["cost"]) >= 0:
+            team[position].append(player)
+            spend += int(player["cost"])
+        current_index += 1
     return spend
 
+
+def check_team(team, budget, data, date):
+    '''
+    Chequea si hay algun jugador que se pueda comprar que tenga mas puntos que
+    los de la posicion en la fecha date. Si no lo hay, elije entre el titular y el suplente
+    Si lo hay, se vende el que menos puntos tenga en la fecha.
+    Devuelve la plata que sobra
+    '''
+    current_money = budget
+    changes_count = 0
+
+    for player in data:
+        if changes_count >= CHANGES_LIMIT:
+            break
+
+        position = player["position"]
+
+        in_team = [member for member in team[position] if member["name"] == player["name"]] != []
+        has_more_points = not [member for member in team[position] if member["points"][date - 1] > player["points"][date - 1]]
+
+        if not in_team and has_more_points:
+            player_to_sell = sorted(team[position], key=lambda player: player["points"][date - 1])[0]
+            if player_to_sell["cost"] + current_money >= player["cost"]:
+                team[position][:] = [member for member in team[position] if member["name"] != player_to_sell["name"]]
+                team[position].append(player)
+                print("Cambio {sold} por {bought} en la fecha {date}".format(sold=player_to_sell["name"], bought=player["name"], date=date))
+                current_money += player_to_sell["cost"] - player["cost"]
+                changes_count += 1
+
+        # se ordena por puntaje en la fecha, los de menos puntaje quedan de suplentes
+        for players in team.values():
+            players = sorted(players, key=lambda player: player["points"][date - 1], reverse=True)
+
+    return current_money
 
 def calculate_team_for_match(csv_file, budget):
     team = {
         "ARQ": [],
-        "DEL": [],
         "DEF": [],
-        "VOL": []
+        "VOL": [],
+        "DEL": [],
     }
 
     data = parse_csv(csv_file)
 
+    # Se arma el equipo para la primera fecha
     current_money = budget
+    print("Plata en fecha 1: {money}  \n".format(money=current_money))
     for position in team.keys():
         current_money -= fill_position(position, data, team, current_money)
-    print(current_money)
-    return team
+
+    # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
+    for date in range(2, 16):
+        money = check_team(team, current_money, data, date)
+        print("Plata en fecha {date}: {money} \n".format(date=date, money=money))
 
 
-team = calculate_team_for_match("./NoNulos.csv", 65000000)
-print(team)
+def to_latex_table(data):
+    pass
+
+
+calculate_team_for_match("./NoNulos.csv", 65000000)
