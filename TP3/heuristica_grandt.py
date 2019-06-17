@@ -1,6 +1,7 @@
 import csv
 
 #TODO: Hacer una funcion para imprimir los datos listos para latex
+#TODO: Logica para cantidad de suplentes
 
 '''
 * La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
