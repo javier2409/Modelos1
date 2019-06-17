@@ -6,7 +6,7 @@ import csv
 '''
 * La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
 * Los de mas puntaje son titulares en la fecha determinada, el resto son suplentes
-* Si hay empate de puntos se selecciona segun orden alfabetico inverso (Z-A) en el campo nombre de manera innsensitive
+* Si hay empate de puntos se selecciona segun orden alfabetico inverso (Z-A) (porque dio mejor) en el campo nombre de manera innsensitive
 * El capitan es el de mas puntos en la fecha
 '''
 
@@ -18,6 +18,7 @@ BUDGET = 65000000
 SECOND_DATE = 2
 LAST_DATE = 16
 MAX_SAME_CLUB = 3
+CSV_FILE = "./NoNulos.csv"
 
 def sort_by_date(data, date):
     '''
@@ -132,27 +133,28 @@ def check_team(team, budget, data, date):
 
     return current_money
 
-def calculate_team_for_match(csv_file, budget):
+def calculate_team_for_match():
     team = {
         "ARQ": [],
         "DEF": [],
         "VOL": [],
         "DEL": [],
     }
+    total_points = 0
+    current_money = BUDGET
 
-    data = parse_csv(csv_file)
+    data = parse_csv(CSV_FILE)
 
     # Se arma el equipo para la primera fecha
-    total_points = 0
-    current_money = budget
     for position in team.keys():
         current_money -= fill_position(position, data, team, current_money)
-
     select_captain(team, 1)
     total_points = calculate_points_for_date(1, team)
+    #print("Plata en fecha {date}: {money} \n".format(date=1, money=current_money))
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
     for date in range(SECOND_DATE, LAST_DATE):
-        money = check_team(team, current_money, data, date)
+        current_money = check_team(team, current_money, data, date)
+        #print("Plata en fecha {date}: {money} \n".format(date=date, money=current_money))
         select_captain(team, date)
         total_points += calculate_points_for_date(date, team)
     print(total_points)
@@ -160,4 +162,4 @@ def calculate_team_for_match(csv_file, budget):
 def to_latex_table(data):
     pass
 
-calculate_team_for_match("./NoNulos.csv", BUDGET)
+calculate_team_for_match()
