@@ -1,7 +1,6 @@
 import csv
 
 #TODO: Hacer una funcion para imprimir los datos listos para latex
-#TODO: Logica para cantidad de suplentes
 
 '''
 * La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
@@ -10,7 +9,7 @@ import csv
 * El capitan es el de mas puntos en la fecha
 '''
 
-LIMITS_BY_POSITION = {"ARQ": 2, "DEL": 3, "DEF": 5, "VOL": 5}
+STRATEGY = {"ARQ": 1, "DEL": 3, "DEF": 3, "VOL": 4}
 FIRST_DATE_INDEX = 3
 LAST_DATE_INDEX = 19
 CHANGES_LIMIT = 4 # Solo puedo comprar/vender hasta 4 jugadores
@@ -19,6 +18,7 @@ SECOND_DATE = 2
 LAST_DATE = 16
 MAX_SAME_CLUB = 3
 CSV_FILE = "./NoNulos.csv"
+SUBSTITUTES_COUNT = 6
 
 def sort_by_date(data, date):
     '''
@@ -57,14 +57,14 @@ def check_club(team, player):
         count += len([member for member in players if member["club"] == player["club"]])
     return count + 1 <= MAX_SAME_CLUB
 
-def fill_position(position, data, team, current_money):
+def fill_position(position, position_limit, data, team, current_money):
     '''
     Llena la posicion con la cantidad de jugadores correspondientes, y devuelve lo que se gasto
     '''
     ordered_data = sort_by_date(data, 1)
     spend = 0
     current_index = 0
-    while len(team[position]) < LIMITS_BY_POSITION[position]:
+    while len(team[position]) < position_limit:
         player = ordered_data[current_index]
 
         same_position = player["position"] == position
@@ -133,6 +133,39 @@ def check_team(team, budget, data, date):
 
     return current_money
 
+def get_limits_by_position(data):
+    '''
+    Devuelve los limites para cada posicion, si los suplentes son dispares asigna a las posiciones con mejor promedio
+    de puntos la mayor cantidad de suplentes posibles
+    '''
+    limits_by_positions = {
+        "ARQ": STRATEGY["ARQ"],
+        "DEF": STRATEGY["DEF"],
+        "VOL": STRATEGY["VOL"],
+        "DEL": STRATEGY["DEL"]
+    }
+    avg_by_position = {"ARQ": 0, "DEF": 0, "VOL": 0, "DEL": 0}
+    positions_count = {"ARQ": 0, "DEF": 0, "VOL": 0, "DEL": 0}
+    # suma todos los puntos por posicion
+    for player in data:
+        avg_by_position[player["position"]] += sum(player["points"])
+        positions_count[player["position"]] += 1
+
+    # calcula los promedios
+    for position in avg_by_position.keys():
+        avg_by_position[position] = avg_by_position[position] / positions_count[position]
+
+    sorted_by_avg = sorted(avg_by_position.items(), key=lambda avg_by_position: avg_by_position[1], reverse=True)
+    sorted_positions = [position[0] for position in sorted_by_avg]
+
+    substitutes_added_count = 0
+    while substitutes_added_count < SUBSTITUTES_COUNT:
+        position_to_add = sorted_positions[substitutes_added_count % len(sorted_positions)]
+        limits_by_positions[position_to_add] += 1
+        substitutes_added_count += 1
+
+    return limits_by_positions
+
 def calculate_team_for_match():
     team = {
         "ARQ": [],
@@ -145,12 +178,14 @@ def calculate_team_for_match():
 
     data = parse_csv(CSV_FILE)
 
+    limits_by_positions = get_limits_by_position(data)
     # Se arma el equipo para la primera fecha
     for position in team.keys():
-        current_money -= fill_position(position, data, team, current_money)
+        current_money -= fill_position(position, limits_by_positions[position], data, team, current_money)
     select_captain(team, 1)
     total_points = calculate_points_for_date(1, team)
     #print("Plata en fecha {date}: {money} \n".format(date=1, money=current_money))
+
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
     for date in range(SECOND_DATE, LAST_DATE):
         current_money = check_team(team, current_money, data, date)
