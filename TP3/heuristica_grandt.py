@@ -18,14 +18,14 @@ SECOND_DATE = 2
 LAST_DATE = 16
 MAX_SAME_CLUB = 3
 CSV_FILE = "./NoNulos.csv"
-SUBSTITUTES_COUNT = 6
+SUBSTITUTES_COUNT = 0
 
-def sort_by_date(data, date):
+def sort_players(players, date, **kwargs):
     '''
-    Ordena la data por fecha date
-    (es + 3 porque la primera fecha es la columna 4)
+    Ordena por puntos en la fecha date y por nombre alfabetico inverso
     '''
-    return sorted(data, key=lambda row: (row["points"][date - 1], row["name"].lower()), reverse=True)
+    reverse = kwargs["reverse"] if "reverse" in kwargs else True
+    return sorted(players, key=lambda player: (player["points"][date - 1], player["name"].lower()), reverse=reverse)
 
 def parse_csv(csv_file):
     '''
@@ -61,7 +61,7 @@ def fill_position(position, position_limit, data, team, current_money):
     '''
     Llena la posicion con la cantidad de jugadores correspondientes, y devuelve lo que se gasto
     '''
-    ordered_data = sort_by_date(data, 1)
+    ordered_data = sort_players(data, 1)
     spend = 0
     current_index = 0
     while len(team[position]) < position_limit:
@@ -83,7 +83,7 @@ def select_captain(team, date):
     '''
     candidates = {}
     for players in team.values():
-        candidate = sorted(players, key=lambda player: (player["points"][date - 1], player["name"].lower()), reverse=True)[0]
+        candidate = sort_players(players, date)[0]
         candidates[candidate["name"]] = {"points": candidate["points"][date - 1], "position": candidate["position"]}
 
     choosen = sorted(candidates.items(), key=lambda player: (player[1]["points"], player[0].lower()), reverse=True)[0]
@@ -119,7 +119,7 @@ def check_team(team, budget, data, date):
         club_restriction = check_club(team, player)
 
         if not in_team and has_more_points and club_restriction:
-            player_to_sell = sorted(team[position], key=lambda player: (player["points"][date - 1], player["name"].lower()))[0]
+            player_to_sell = sort_players(team[position], date, reverse=False)[0]
             if player_to_sell["cost"] + current_money >= player["cost"]:
                 team[position][:] = [member for member in team[position] if member["name"] != player_to_sell["name"]]
                 team[position].append(player)
@@ -129,7 +129,7 @@ def check_team(team, budget, data, date):
 
         # se ordena por puntaje en la fecha, los de menos puntaje quedan de suplentes
         for players in team.values():
-            players = sorted(players, key=lambda player: player["points"][date - 1], reverse=True)
+            players = sort_players(players, date)
 
     return current_money
 
@@ -179,6 +179,7 @@ def calculate_team_for_match():
     data = parse_csv(CSV_FILE)
 
     limits_by_positions = get_limits_by_position(data)
+
     # Se arma el equipo para la primera fecha
     for position in team.keys():
         current_money -= fill_position(position, limits_by_positions[position], data, team, current_money)
