@@ -1,7 +1,6 @@
 import csv
 
 #TODO: Definir que pasa cuando los puntos son iguales
-#TODO: Agregar la logica del capitan
 #TODO: Hacer una funcion para imprimir los datos listos para latex
 
 '''
@@ -26,7 +25,6 @@ def sort_by_date(data, date):
     '''
     return sorted(data, key=lambda row: row["points"][date - 1], reverse=True)
 
-
 def parse_csv(csv_file):
     '''
     Parsea el csv y retorna los datos como una lista de dicts
@@ -48,7 +46,6 @@ def parse_csv(csv_file):
             )
     return parsed_data
 
-
 def check_club(team, player):
     '''
     Devuelve True si se cumple la restriccion de clubes, False en caso contrario
@@ -57,7 +54,6 @@ def check_club(team, player):
     for players in team.values():
         count += len([member for member in players if member["club"] == player["club"]])
     return count + 1 <= MAX_SAME_CLUB
-
 
 def fill_position(position, data, team, current_money):
     '''
@@ -92,6 +88,13 @@ def select_captain(team, date):
 
     for player in team[choosen[1]["position"]]:
         player["captain"] = player["name"] == choosen[0]
+
+def calculate_points_for_date(date, team):
+    total = 0
+    for players in team.values():
+        total += sum([player["points"][date - 1] for player in players])
+        total += sum([player["points"][date - 1] for player in players if player["captain"]])
+    return total
 
 def check_team(team, budget, data, date):
     '''
@@ -139,19 +142,20 @@ def calculate_team_for_match(csv_file, budget):
     data = parse_csv(csv_file)
 
     # Se arma el equipo para la primera fecha
+    total_points = 0
     current_money = budget
     for position in team.keys():
         current_money -= fill_position(position, data, team, current_money)
 
     select_captain(team, 1)
+    total_points = calculate_points_for_date(1, team)
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
     for date in range(SECOND_DATE, LAST_DATE):
         money = check_team(team, current_money, data, date)
         select_captain(team, date)
-
+        total_points += calculate_points_for_date(date, team)
 
 def to_latex_table(data):
     pass
-
 
 calculate_team_for_match("./NoNulos.csv", BUDGET)
