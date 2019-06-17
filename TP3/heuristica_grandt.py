@@ -1,11 +1,11 @@
 import csv
 
-#TODO: Definir que pasa cuando los puntos son iguales
 #TODO: Hacer una funcion para imprimir los datos listos para latex
 
 '''
 * La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
 * Los de mas puntaje son titulares en la fecha determinada, el resto son suplentes
+* Si hay empate de puntos se selecciona segun orden alfabetico inverso (Z-A) en el campo nombre de manera innsensitive
 * El capitan es el de mas puntos en la fecha
 '''
 
@@ -23,7 +23,7 @@ def sort_by_date(data, date):
     Ordena la data por fecha date
     (es + 3 porque la primera fecha es la columna 4)
     '''
-    return sorted(data, key=lambda row: row["points"][date - 1], reverse=True)
+    return sorted(data, key=lambda row: (row["points"][date - 1], row["name"].lower()), reverse=True)
 
 def parse_csv(csv_file):
     '''
@@ -81,10 +81,10 @@ def select_captain(team, date):
     '''
     candidates = {}
     for players in team.values():
-        candidate = sorted(players, key=lambda player: player["points"][date - 1], reverse=True)[0]
+        candidate = sorted(players, key=lambda player: (player["points"][date - 1], player["name"].lower()), reverse=True)[0]
         candidates[candidate["name"]] = {"points": candidate["points"][date - 1], "position": candidate["position"]}
 
-    choosen = sorted(candidates.items(), key=lambda player: player[1]["points"], reverse=True)[0]
+    choosen = sorted(candidates.items(), key=lambda player: (player[1]["points"], player[0].lower()), reverse=True)[0]
 
     for player in team[choosen[1]["position"]]:
         player["captain"] = player["name"] == choosen[0]
@@ -117,7 +117,7 @@ def check_team(team, budget, data, date):
         club_restriction = check_club(team, player)
 
         if not in_team and has_more_points and club_restriction:
-            player_to_sell = sorted(team[position], key=lambda player: player["points"][date - 1])[0]
+            player_to_sell = sorted(team[position], key=lambda player: (player["points"][date - 1], player["name"].lower()))[0]
             if player_to_sell["cost"] + current_money >= player["cost"]:
                 team[position][:] = [member for member in team[position] if member["name"] != player_to_sell["name"]]
                 team[position].append(player)
@@ -154,6 +154,7 @@ def calculate_team_for_match(csv_file, budget):
         money = check_team(team, current_money, data, date)
         select_captain(team, date)
         total_points += calculate_points_for_date(date, team)
+    print(total_points)
 
 def to_latex_table(data):
     pass
