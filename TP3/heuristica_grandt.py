@@ -1,7 +1,6 @@
 import csv
 
 #TODO: Definir que pasa cuando los puntos son iguales
-#TODO: Agregar la logica de los clubes
 #TODO: Agregar la logica del capitan
 #TODO: Hacer una funcion para imprimir los datos listos para latex
 
@@ -16,6 +15,7 @@ CHANGES_LIMIT = 4 # Solo puedo comprar/vender hasta 4 jugadores
 BUDGET = 65000000
 SECOND_DATE = 2
 LAST_DATE = 16
+MAX_SAME_CLUB = 3
 
 def sort_by_date(data, date):
     '''
@@ -46,6 +46,16 @@ def parse_csv(csv_file):
     return parsed_data
 
 
+def check_club(team, player):
+    '''
+    Devuelve True si se cumple la restriccion de clubes, False en caso contrario
+    '''
+    count = 0
+    for players in team.values():
+        count += len([member for member in players if member["club"] == player["club"]])
+    return count + 1 <= MAX_SAME_CLUB
+
+
 def fill_position(position, data, team, current_money):
     '''
     Llena la posicion con la cantidad de jugadores correspondientes, y devuelve lo que se gasto
@@ -55,7 +65,12 @@ def fill_position(position, data, team, current_money):
     current_index = 0
     while len(team[position]) < LIMITS_BY_POSITION[position]:
         player = ordered_data[current_index]
-        if player["position"] == position and current_money - int(player["cost"]) >= 0:
+
+        same_position = player["position"] == position
+        can_afford = current_money - int(player["cost"]) >= 0
+        club_restriction = check_club(team, player)
+
+        if same_position and can_afford and club_restriction:
             team[position].append(player)
             spend += int(player["cost"])
         current_index += 1
@@ -80,8 +95,9 @@ def check_team(team, budget, data, date):
 
         in_team = [member for member in team[position] if member["name"] == player["name"]] != []
         has_more_points = not [member for member in team[position] if member["points"][date - 1] > player["points"][date - 1]]
+        club_restriction = check_club(team, player)
 
-        if not in_team and has_more_points:
+        if not in_team and has_more_points and club_restriction:
             player_to_sell = sorted(team[position], key=lambda player: player["points"][date - 1])[0]
             if player_to_sell["cost"] + current_money >= player["cost"]:
                 team[position][:] = [member for member in team[position] if member["name"] != player_to_sell["name"]]
