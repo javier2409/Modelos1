@@ -18,7 +18,8 @@ SECOND_DATE = 2
 LAST_DATE = 16
 MAX_SAME_CLUB = 3
 CSV_FILE = "./NoNulos.csv"
-SUBSTITUTES_COUNT = 0
+OUTPUT_FILE = "./results.csv"
+SUBSTITUTES_COUNT = 4
 
 def sort_players(players, date, **kwargs):
     '''
@@ -59,7 +60,8 @@ def check_club(team, player):
 
 def fill_position(position, position_limit, data, team, current_money):
     '''
-    Llena la posicion con la cantidad de jugadores correspondientes, y devuelve lo que se gasto
+    Llena la posicion con la cantidad de jugadores correspondientes,
+    y devuelve lo que sobro de dinero
     '''
     ordered_data = sort_players(data, 1)
     spend = 0
@@ -75,7 +77,7 @@ def fill_position(position, position_limit, data, team, current_money):
             team[position].append(player)
             spend += int(player["cost"])
         current_index += 1
-    return spend
+    return current_money - spend
 
 def select_captain(team, date):
     '''
@@ -166,36 +168,46 @@ def get_limits_by_position(data):
 
     return limits_by_positions
 
+def print_as_latex_table(data):
+    for players in data.values():
+        for player in players:
+            full_name = player["name"]
+            first_name = full_name.split(',')[0]
+            last_name = full_name.split(',')[1]
+            position = player["position"]
+            command = "{}         & {}         & {}      \\\ \\hline".format(
+                first_name, last_name, position
+            )
+            print(command)
+
+def print_as_table(team):
+    print("Nombre Apellido Posicion")
+    for players in team.values():
+        for player in players:
+            print("{} {}".format(player["name"], player["position"]))
+
 def calculate_team_for_match():
-    team = {
-        "ARQ": [],
-        "DEF": [],
-        "VOL": [],
-        "DEL": [],
-    }
+    team = {"ARQ": [], "DEF": [], "VOL": [], "DEL": []}
     total_points = 0
     current_money = BUDGET
-
     data = parse_csv(CSV_FILE)
-
     limits_by_positions = get_limits_by_position(data)
+    first_date = 1
 
     # Se arma el equipo para la primera fecha
     for position in team.keys():
-        current_money -= fill_position(position, limits_by_positions[position], data, team, current_money)
-    select_captain(team, 1)
-    total_points = calculate_points_for_date(1, team)
-    #print("Plata en fecha {date}: {money} \n".format(date=1, money=current_money))
-
+        current_money = fill_position(position, limits_by_positions[position], data, team, current_money)
+    select_captain(team, first_date)
+    total_points = calculate_points_for_date(first_date, team)
+    print_as_latex_table(team)
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
     for date in range(SECOND_DATE, LAST_DATE):
         current_money = check_team(team, current_money, data, date)
-        #print("Plata en fecha {date}: {money} \n".format(date=date, money=current_money))
         select_captain(team, date)
         total_points += calculate_points_for_date(date, team)
-    print(total_points)
+        print("\nFecha {} \n".format(date))
+        print_as_latex_table(team)
 
-def to_latex_table(data):
-    pass
+    print("\nPuntos totales con {} suplentes: {}".format(SUBSTITUTES_COUNT, total_points))
 
 calculate_team_for_match()
