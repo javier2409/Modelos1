@@ -1,7 +1,5 @@
 import csv
 
-#TODO: Hacer una funcion para imprimir los datos listos para latex
-
 '''
 * La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
 * Los de mas puntaje son titulares en la fecha determinada, el resto son suplentes
