@@ -5,7 +5,9 @@ import csv
 #TODO: Hacer una funcion para imprimir los datos listos para latex
 
 '''
-La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
+* La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
+* Los de mas puntaje son titulares en la fecha determinada, el resto son suplentes
+* El capitan es el de mas puntos en la fecha
 '''
 
 LIMITS_BY_POSITION = {"ARQ": 2, "DEL": 3, "DEF": 5, "VOL": 5}
@@ -40,7 +42,8 @@ def parse_csv(csv_file):
                     "position": player[1],
                     "club": player[2],
                     "cost": int(player[3]),
-                    "points": [int(points) for i, points in enumerate(player) if i > FIRST_DATE_INDEX and i < LAST_DATE_INDEX]
+                    "points": [int(points) for i, points in enumerate(player) if i > FIRST_DATE_INDEX and i < LAST_DATE_INDEX],
+                    "captain": False
                 }
             )
     return parsed_data
@@ -76,6 +79,19 @@ def fill_position(position, data, team, current_money):
         current_index += 1
     return spend
 
+def select_captain(team, date):
+    '''
+    Selecciona el capitan como aquel de mayor puntaje en la fecha date
+    '''
+    candidates = {}
+    for players in team.values():
+        candidate = sorted(players, key=lambda player: player["points"][date - 1], reverse=True)[0]
+        candidates[candidate["name"]] = {"points": candidate["points"][date - 1], "position": candidate["position"]}
+
+    choosen = sorted(candidates.items(), key=lambda player: player[1]["points"], reverse=True)[0]
+
+    for player in team[choosen[1]["position"]]:
+        player["captain"] = player["name"] == choosen[0]
 
 def check_team(team, budget, data, date):
     '''
@@ -102,7 +118,7 @@ def check_team(team, budget, data, date):
             if player_to_sell["cost"] + current_money >= player["cost"]:
                 team[position][:] = [member for member in team[position] if member["name"] != player_to_sell["name"]]
                 team[position].append(player)
-                print("Cambio {sold} por {bought} en la fecha {date}".format(sold=player_to_sell["name"], bought=player["name"], date=date))
+                #print("Cambio {sold} por {bought} en la fecha {date}".format(sold=player_to_sell["name"], bought=player["name"], date=date))
                 current_money += player_to_sell["cost"] - player["cost"]
                 changes_count += 1
 
@@ -124,14 +140,14 @@ def calculate_team_for_match(csv_file, budget):
 
     # Se arma el equipo para la primera fecha
     current_money = budget
-    print("Plata en fecha 1: {money}  \n".format(money=current_money))
     for position in team.keys():
         current_money -= fill_position(position, data, team, current_money)
 
+    select_captain(team, 1)
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
     for date in range(SECOND_DATE, LAST_DATE):
         money = check_team(team, current_money, data, date)
-        print("Plata en fecha {date}: {money} \n".format(date=date, money=money))
+        select_captain(team, date)
 
 
 def to_latex_table(data):
