@@ -1,4 +1,5 @@
 import csv
+import pandas as pd
 
 '''
 * La idea es tener en el equipo siempre los jugadores con mas puntos para la fecha
@@ -91,9 +92,12 @@ def select_captain(team, date):
     for player in team[choosen[1]["position"]]:
         player["captain"] = player["name"] == choosen[0]
 
-def calculate_points_for_date(date, team):
+def calculate_points_for_date(date, team):  
     total = 0
-    for players in team.values():
+    for position in team:
+        players = []
+        for i in range(STRATEGY[position]):
+            players.append(team[position][i])
         total += sum([player["points"][date - 1] for player in players])
         total += sum([player["points"][date - 1] for player in players if player["captain"]])
     return total
@@ -107,7 +111,7 @@ def check_team(team, budget, data, date):
     '''
     current_money = budget
     changes_count = 0
-
+    data = sort_players(data,date)
     for player in data:
         if changes_count >= CHANGES_LIMIT:
             break
@@ -167,16 +171,33 @@ def get_limits_by_position(data):
     return limits_by_positions
 
 def print_as_latex_table(data):
-    for players in data.values():
-        for player in players:
+    tit_df = []
+    sup_df = []
+    for position in data:
+        for i,player in enumerate(data[position]):
+
             full_name = player["name"]
             first_name = full_name.split(',')[0]
             last_name = full_name.split(',')[1]
             position = player["position"]
+            p = [first_name,last_name,position]
+            if i < STRATEGY[position]:
+                tit_df.append(p)
+            else:
+                sup_df.append(p)
             command = "{}         & {}         & {}      \\\ \\hline".format(
                 first_name, last_name, position
             )
-            print(command)
+            #print(command)
+    df1 = pd.DataFrame(tit_df)
+    df1.columns = ['Nombre','Apellido','Posicion']
+    print('Titulares \n')
+    print(df1.to_latex(longtable=True,multicolumn=True,index_names=False,index=False))
+    if SUBSTITUTES_COUNT > 0:
+        df2 = pd.DataFrame(sup_df)
+        df2.columns = ['Nombre','Apellido','Posicion']
+        print('Suplentes\n')
+        print(df2.to_latex(longtable=True,multicolumn=True,index_names=False,index=False))
 
 def print_as_table(team):
     print("Nombre Apellido Posicion")
@@ -197,13 +218,14 @@ def calculate_team_for_match():
         current_money = fill_position(position, limits_by_positions[position], data, team, current_money)
     select_captain(team, first_date)
     total_points = calculate_points_for_date(first_date, team)
+    print("\\textbf{Fecha 1}\n")
     print_as_latex_table(team)
     # Se arma el equipo para las fechas restantes, comprando y vendiendo segun convenga
     for date in range(SECOND_DATE, LAST_DATE):
         current_money = check_team(team, current_money, data, date)
         select_captain(team, date)
         total_points += calculate_points_for_date(date, team)
-        print("\nFecha {} \n".format(date))
+        print("\\textbf{Fecha "+str(date)+"}\n")
         print_as_latex_table(team)
 
     print("\nPuntos totales con {} suplentes: {}".format(SUBSTITUTES_COUNT, total_points))
