@@ -18,7 +18,7 @@ LAST_DATE = 16
 MAX_SAME_CLUB = 3
 CSV_FILE = "./NoNulos.csv"
 OUTPUT_FILE = "./results.csv"
-SUBSTITUTES_COUNT = 4
+SUBSTITUTES_COUNT = 6
 
 def sort_players(players, date, **kwargs):
     '''
@@ -132,8 +132,8 @@ def check_team(team, budget, data, date):
                 changes_count += 1
 
         # se ordena por puntaje en la fecha, los de menos puntaje quedan de suplentes
-        for players in team.values():
-            players = sort_players(players, date)
+        for position in team:
+            team[position] = sort_players(team[position], date)
 
     return current_money
 
